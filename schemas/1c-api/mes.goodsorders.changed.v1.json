@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mes.goodsorders.changed.v1.json",
+  "title": "mes.goodsorders.changed.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["eventId", "eventTime", "source", "payload"],
+  "properties": {
+    "eventId": { "type": "string", "description": "UUID события" },
+    "eventTime": { "type": "string", "format": "date-time" },
+    "source": { "type": "string", "description": "Идентификатор продюсера, опубликовавшего событие (например, '1c-mes-kitchen', 'mes-api'). Нужен для аудита и чтобы консьюмер мог игнорировать свои же события" },
+    "payload": {
+      "type": "object",
+      "description": "Заказ магазина (шапка + позиции) — снимок состояния после изменения",
+      "additionalProperties": false,
+      "required": ["guid", "number", "date", "date_of_shipment", "ce_id", "shop_id", "deletion_mark", "content"],
+      "properties": {
+        "guid":             { "type": "string", "format": "uuid", "description": "GUID документа заказа" },
+        "number":           { "type": "string", "description": "Номер документа" },
+        "date":             { "type": "string", "format": "date-time", "description": "Дата документа" },
+        "date_of_shipment": { "type": "string", "format": "date-time", "description": "Дата отгрузки заказа" },
+        "ce_id":            { "type": "string", "format": "uuid", "description": "GUID фабрики-изготовителя" },
+        "shop_id":          { "type": "string", "format": "uuid", "description": "GUID магазина-получателя" },
+        "deletion_mark":    { "type": "boolean", "description": "Пометка на удаление в 1С" },
+        "content": {
+          "type": "array",
+          "description": "Позиции заказа",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["parent_id", "nomenclature_id", "unit_id", "quantity"],
+            "properties": {
+              "parent_id":       { "type": "string", "format": "uuid", "description": "GUID родителя (дублирует guid шапки)" },
+              "nomenclature_id": { "type": "string", "format": "uuid", "description": "GUID номенклатуры" },
+              "unit_id":         { "type": "string", "format": "uuid", "description": "GUID единицы измерения" },
+              "quantity":        { "type": "number", "description": "Количество заказа" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

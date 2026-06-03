@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mes.orgunits.changed.v1.json",
+  "title": "mes.orgunits.changed.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["eventId", "eventTime", "source", "payload"],
+  "properties": {
+    "eventId": { "type": "string", "description": "UUID события" },
+    "eventTime": { "type": "string", "format": "date-time" },
+    "source": { "type": "string", "description": "Идентификатор продюсера, опубликовавшего событие (например, '1c-mes-kitchen', 'mes-api'). Нужен для аудита и чтобы консьюмер мог игнорировать свои же события" },
+    "payload": {
+      "type": "object",
+      "description": "Структурная единица (Catalog_СтруктурныеЕдиницы) — снимок состояния после изменения",
+      "additionalProperties": false,
+      "required": ["ref_key", "code", "name", "type", "parent_key", "is_active", "deletion_mark"],
+      "properties": {
+        "ref_key":       { "type": "string", "format": "uuid", "description": "GUID СЕ" },
+        "code":          { "type": "integer", "description": "Числовой код СЕ (например, 502 = ФК Алматы)" },
+        "name":          { "type": "string", "description": "Наименование СЕ" },
+        "type":          { "type": "string", "description": "Тип СЕ (фабрика/магазин/офис)" },
+        "parent_key":    { "type": "string", "description": "GUID родительской СЕ. Пустой GUID = корень" },
+        "is_active":     { "type": "boolean", "description": "Признак активности" },
+        "deletion_mark": { "type": "boolean", "description": "Пометка на удаление. true = объект помечен на удаление в 1С (консьюмер должен soft-delete у себя)" }
+      }
+    }
+  }
+}

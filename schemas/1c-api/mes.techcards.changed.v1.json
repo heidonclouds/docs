@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mes.techcards.changed.v1.json",
+  "title": "mes.techcards.changed.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["eventId", "eventTime", "source", "payload"],
+  "properties": {
+    "eventId": { "type": "string", "description": "UUID события" },
+    "eventTime": { "type": "string", "format": "date-time" },
+    "source": { "type": "string", "description": "Идентификатор продюсера, опубликовавшего событие (например, '1c-mes-kitchen', 'mes-api'). Нужен для аудита и чтобы консьюмер мог игнорировать свои же события" },
+    "payload": {
+      "type": "object",
+      "description": "Технологическая карта (шапка + состав + СЕ) — снимок состояния после изменения",
+      "additionalProperties": false,
+      "required": ["guid", "number", "date", "date_of_expiring", "quantity", "id_nomenclature", "description", "deletion_mark", "content", "СЕ"],
+      "properties": {
+        "guid":              { "type": "string", "format": "uuid", "description": "GUID документа техкарты" },
+        "number":            { "type": "string", "description": "Номер документа" },
+        "date":              { "type": "string", "format": "date-time", "description": "Дата документа" },
+        "date_of_expiring":  { "type": "string", "description": "Дата окончания действия. '0001-01-01T00:00:00' = бессрочно" },
+        "quantity":          { "type": "number", "description": "Количество выхода готовой продукции" },
+        "id_nomenclature":   { "type": "string", "format": "uuid", "description": "GUID продукции" },
+        "description":       { "type": "string", "description": "Описание/комментарий" },
+        "deletion_mark":     { "type": "boolean", "description": "Пометка на удаление в 1С" },
+        "content": {
+          "type": "array",
+          "description": "Состав — ингредиенты",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id_nomenclature", "quantity", "unit"],
+            "properties": {
+              "id_nomenclature": { "type": "string", "format": "uuid", "description": "GUID ингредиента" },
+              "quantity":        { "type": "number", "description": "Количество ингредиента" },
+              "unit":            { "type": "string", "format": "uuid", "description": "GUID единицы измерения" }
+            }
+          }
+        },
+        "СЕ": {
+          "type": "array",
+          "description": "Список СЕ/цехов, в которых действует карта",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id_се", "id_workshop"],
+            "properties": {
+              "id_се":       { "type": "string", "format": "uuid", "description": "GUID структурной единицы" },
+              "id_workshop": { "type": "string", "description": "GUID цеха (может быть пустым)" }
+            }
+          }
+        }
+      }
+    }
+  }
+}
